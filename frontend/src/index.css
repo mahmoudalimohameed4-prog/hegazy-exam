@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Cairo', sans-serif;
+  direction: rtl;
+  font-size: 14px; /* Reduced base font size for more refined look */
+}
+
+@media (min-width: 768px) {
+  :root {
+    font-size: 15px;
+  }
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+/* Refined Utility Classes */
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
+}
+
+/* SweetAlert2 Refinement */
+.swal2-popup {
+  border-radius: 1.25rem !important;
+  padding: 1.5rem !important;
+  font-family: 'Cairo', sans-serif !important;
+  direction: rtl !important;
+  max-width: 90% !important;
+}
+
+.swal2-title {
+  color: #0f172a !important;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+}
+
+.swal2-html-container {
+  font-size: 0.95rem !important;
+  color: #64748b !important;
+}
+
+.swal2-actions {
+  margin-top: 1rem !important;
+}
+
+.swal2-confirm {
+  background-color: #0284c7 !important;
+  border-radius: 0.75rem !important;
+  padding: 0.6rem 1.75rem !important;
+  font-size: 0.9rem !important;
+}
+
+.swal2-cancel {
+  background-color: #ef4444 !important;
+  border-radius: 0.75rem !important;
+  padding: 0.6rem 1.75rem !important;
+  font-size: 0.9rem !important;
+}

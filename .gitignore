@@ -1,0 +1,15 @@
+node_modules/
+.env
+.DS_Store
+dist/
+build/
+*.log
+.gemini/
+.antigravity/
+package-lock.json
+frontend/node_modules/
+backend/node_modules/
+frontend/dist/
+backend/dist/
+frontend/.env
+backend/.env
