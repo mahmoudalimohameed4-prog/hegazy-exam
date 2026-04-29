@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Play, ClipboardList, BarChart3, Clock, CheckCircle2, Menu, Settings, Lock, Eye } from 'lucide-react';
+import { Play, ClipboardList, BarChart3, Clock, CheckCircle2, Menu, Settings, Lock, Eye, Save } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Swal from 'sweetalert2';
 
@@ -49,6 +49,19 @@ const StudentDashboard = () => {
     }
   };
 
+  const ModernButton = ({ onClick, text, icon: Icon, colorClass = "bg-sky-600", darkColorClass = "bg-sky-700", type = "button", className = "" }) => (
+    <button 
+      type={type} 
+      onClick={onClick} 
+      className={`flex items-center rounded-xl overflow-hidden shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] ${className}`}
+    >
+      <span className={`flex-1 px-4 py-2.5 ${colorClass} text-white text-xs font-bold`}>{text}</span>
+      <span className={`p-2.5 ${darkColorClass} text-white flex items-center justify-center border-r border-white/10`}>
+        <Icon className="w-4 h-4" />
+      </span>
+    </button>
+  );
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar 
@@ -61,19 +74,13 @@ const StudentDashboard = () => {
       />
 
       <main className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'lg:pr-20' : 'lg:pr-72'}`}>
-        {/* Mobile Header */}
         <div className="lg:hidden bg-white border-b p-4 sticky top-0 z-50 flex items-center justify-between">
            <button onClick={() => setIsSidebarOpen(true)} className="p-2 bg-slate-50 rounded-lg">
              <Menu className="w-5 h-5 text-slate-800" />
            </button>
            <span className="font-bold text-slate-800 text-sm">منصة الطالب</span>
         </div>
-
         <div className="p-4 md:p-6 max-w-6xl mx-auto">
-          <div className="mb-6">
-            <h1 className="text-xl md:text-2xl font-extrabold text-slate-900">مرحباً، {user?.name} 👋</h1>
-            <p className="text-slate-500 text-sm mt-0.5">نتمنى لك التوفيق في اختباراتك اليوم</p>
-          </div>
 
           {activeTab === 'quizzes' && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -92,13 +99,15 @@ const StudentDashboard = () => {
                   </div>
                   <h3 className="text-base font-bold text-slate-800 mb-1">{quiz.title}</h3>
                   <p className="text-slate-500 text-xs mb-6 line-clamp-2 h-8">{quiz.description || 'لا يوجد وصف متاح للاختبار.'}</p>
-                  <button
+                  
+                  <ModernButton 
+                    text="ابدأ الاختبار الآن" 
+                    icon={Play} 
+                    colorClass="bg-slate-900" 
+                    darkColorClass="bg-black" 
+                    className="w-full"
                     onClick={() => navigate(`/quiz/${quiz._id}`)}
-                    className="w-full bg-slate-900 hover:bg-sky-600 text-white font-bold py-2.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2"
-                  >
-                    <Play className="w-3.5 h-3.5" />
-                    <span>ابدأ الاختبار</span>
-                  </button>
+                  />
                 </div>
               ))}
             </div>
@@ -170,12 +179,13 @@ const StudentDashboard = () => {
                     required
                   />
                 </div>
-                <button
-                  type="submit"
-                  className="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl shadow-md shadow-sky-100 transition-all text-sm"
-                >
-                  تحديث كلمة المرور
-                </button>
+                
+                <ModernButton 
+                  type="submit" 
+                  text="تحديث كلمة المرور" 
+                  icon={Save} 
+                  className="w-full"
+                />
               </form>
             </div>
           )}

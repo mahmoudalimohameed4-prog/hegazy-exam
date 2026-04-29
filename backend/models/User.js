@@ -12,16 +12,10 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   password: {
-    type: String, // Only for national_id
+    type: String,
   },
   phone: {
     type: String,
-  },
-  otp: {
-    type: String,
-  },
-  otpExpires: {
-    type: Date,
   },
   role: {
     type: String,

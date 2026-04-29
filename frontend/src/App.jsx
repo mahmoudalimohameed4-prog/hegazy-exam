@@ -35,7 +35,6 @@ function App() {
             
             <Route path="/student" element={
               <ProtectedRoute role="student">
-                <Navbar />
                 <StudentDashboard />
               </ProtectedRoute>
             } />

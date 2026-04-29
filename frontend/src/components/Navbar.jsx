@@ -27,28 +27,6 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <div className="flex items-center space-x-4 space-x-reverse">
-            <div className="hidden md:flex items-center space-x-4 space-x-reverse ml-4">
-              {user.role === 'teacher' ? (
-                <Link to="/teacher" className="text-gray-600 hover:text-primary-600 font-medium">لوحة التحكم</Link>
-              ) : (
-                <Link to="/student" className="text-gray-600 hover:text-primary-600 font-medium">اختباراتي</Link>
-              )}
-            </div>
-
-            <div className="flex items-center bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
-              <User className="w-4 h-4 text-gray-500 ml-2" />
-              <span className="text-sm font-medium text-gray-700">{user.name}</span>
-              <span className="mx-2 text-gray-300">|</span>
-              <button 
-                onClick={handleLogout}
-                className="text-gray-500 hover:text-red-600 transition-colors"
-                title="تسجيل الخروج"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </nav>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { CheckCircle2, XCircle, BarChart, ArrowRight, Download, Trophy, Target, ClipboardCheck } from 'lucide-react';
+import { CheckCircle2, XCircle, BarChart, ArrowRight, Download, Trophy, Target, ClipboardCheck, Printer, Home } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 const ResultPage = () => {
@@ -27,11 +27,23 @@ const ResultPage = () => {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-primary-600"></div>
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-sky-600"></div>
     </div>
   );
 
   if (!result) return null;
+
+  const ModernButton = ({ onClick, text, icon: Icon, colorClass = "bg-sky-600", darkColorClass = "bg-sky-700", className = "" }) => (
+    <button 
+      onClick={onClick} 
+      className={`flex items-center rounded-2xl overflow-hidden shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] ${className}`}
+    >
+      <span className={`flex-1 px-6 py-4 ${colorClass} text-white font-bold text-center`}>{text}</span>
+      <span className={`p-4 ${darkColorClass} text-white flex items-center justify-center border-r border-white/10`}>
+        <Icon className="w-6 h-6" />
+      </span>
+    </button>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4" dir="rtl">
@@ -39,14 +51,14 @@ const ResultPage = () => {
         
         {/* Top Header Card */}
         <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 text-center mb-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary-50 rounded-bl-full -z-0 opacity-50"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-sky-50 rounded-bl-full -z-0 opacity-50"></div>
           
           <div className="relative z-10">
-            <div className="inline-flex p-4 bg-primary-50 rounded-full mb-6">
-              <Trophy className="w-12 h-12 text-primary-600" />
+            <div className="inline-flex p-4 bg-sky-50 rounded-full mb-6">
+              <Trophy className="w-12 h-12 text-sky-600" />
             </div>
-            <h1 className="text-3xl font-extrabold text-navy-900 mb-2">تهانينا! لقد أتممت الاختبار</h1>
-            <p className="text-gray-500 text-lg">{result.quiz?.title}</p>
+            <h1 className="text-3xl font-extrabold text-slate-900 mb-2">تهانينا! لقد أتممت الاختبار</h1>
+            <p className="text-slate-500 text-lg">{result.quiz?.title}</p>
           </div>
         </div>
 
@@ -58,7 +70,7 @@ const ResultPage = () => {
               <BarChart className="w-6 h-6" />
             </div>
             <span className="text-gray-400 text-sm font-bold mb-1">النتيجة النهائية</span>
-            <div className="text-2xl font-black text-navy-900">{result.score} / {result.total}</div>
+            <div className="text-2xl font-black text-slate-900">{result.score} / {result.total}</div>
           </div>
 
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center">
@@ -89,19 +101,19 @@ const ResultPage = () => {
 
         {/* Detailed Feedback & Actions */}
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-          <h3 className="text-xl font-bold text-navy-900 mb-6 flex items-center">
-            <ClipboardCheck className="w-6 h-6 ml-2 text-primary-600" />
+          <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center">
+            <ClipboardCheck className="w-6 h-6 ml-2 text-sky-600" />
             ملخص الأداء
           </h3>
           
           <div className="space-y-6 mb-10">
             <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl border border-gray-100">
               <span className="text-gray-600 font-bold">إجمالي عدد الأسئلة</span>
-              <span className="text-navy-900 font-black">{result.total} سؤال</span>
+              <span className="text-slate-900 font-black">{result.total} سؤال</span>
             </div>
             <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl border border-gray-100">
               <span className="text-gray-600 font-bold">تاريخ ووقت الانتهاء</span>
-              <span className="text-navy-900 font-black">{new Date(result.finishedAt).toLocaleString('ar-EG')}</span>
+              <span className="text-slate-900 font-black">{new Date(result.finishedAt).toLocaleString('ar-EG')}</span>
             </div>
             <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl border border-gray-100">
               <span className="text-gray-600 font-bold">الحالة</span>
@@ -112,20 +124,22 @@ const ResultPage = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={() => navigate('/student')}
-              className="flex-1 bg-navy-900 hover:bg-navy-800 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center space-x-2 space-x-reverse"
-            >
-              <ArrowRight className="w-5 h-5" />
-              <span>العودة للرئيسية</span>
-            </button>
-            <button
-              onClick={() => window.print()}
-              className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center space-x-2 space-x-reverse shadow-lg shadow-primary-100"
-            >
-              <Download className="w-5 h-5" />
-              <span>طباعة النتيجة</span>
-            </button>
+            <ModernButton 
+              onClick={() => navigate('/student')} 
+              text="العودة للرئيسية" 
+              icon={Home} 
+              colorClass="bg-slate-900" 
+              darkColorClass="bg-black" 
+              className="flex-1"
+            />
+            <ModernButton 
+              onClick={() => window.print()} 
+              text="طباعة النتيجة" 
+              icon={Printer} 
+              colorClass="bg-sky-600" 
+              darkColorClass="bg-sky-700" 
+              className="flex-1"
+            />
           </div>
         </div>
 

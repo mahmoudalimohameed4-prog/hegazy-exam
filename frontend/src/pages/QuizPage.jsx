@@ -103,6 +103,20 @@ const QuizPage = () => {
   const currentQuestion = quiz.questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
 
+  const ModernButton = ({ onClick, text, icon: Icon, disabled, colorClass = "bg-slate-900", darkColorClass = "bg-black", className = "" }) => (
+    <button 
+      type="button" 
+      onClick={onClick} 
+      disabled={disabled}
+      className={`flex items-center rounded-xl overflow-hidden shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed ${className}`}
+    >
+      <span className={`px-8 py-3 ${colorClass} text-white text-base font-bold`}>{text}</span>
+      <span className={`px-4 py-3 ${darkColorClass} text-white flex items-center justify-center border-r border-white/10`}>
+        <Icon className="w-5 h-5" />
+      </span>
+    </button>
+  );
+
   return (
     <div className="min-h-screen bg-slate-50 pb-12" dir="rtl">
       {/* Header with Timer & Progress */}
@@ -169,27 +183,14 @@ const QuizPage = () => {
 
         {/* Navigation Buttons */}
         <div className="flex justify-end mt-8">
-          <button
+          <ModernButton 
             onClick={handleNext}
             disabled={submitting || answers[currentQuestionIndex] === undefined}
-            className={`group py-3.5 px-10 rounded-xl font-bold transition-all shadow-lg flex items-center gap-2 text-base ${
-              answers[currentQuestionIndex] === undefined 
-                ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' 
-                : 'bg-slate-900 hover:bg-sky-600 text-white'
-            }`}
-          >
-            {currentQuestionIndex === quiz.questions.length - 1 ? (
-              <>
-                <Send className="w-4 h-4" />
-                <span>إنهاء وإرسال</span>
-              </>
-            ) : (
-              <>
-                <span>السؤال التالي</span>
-                <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-              </>
-            )}
-          </button>
+            text={currentQuestionIndex === quiz.questions.length - 1 ? 'إنهاء وإرسال' : 'السؤال التالي'}
+            icon={currentQuestionIndex === quiz.questions.length - 1 ? Send : ChevronLeft}
+            colorClass={currentQuestionIndex === quiz.questions.length - 1 ? "bg-emerald-600" : "bg-slate-900"}
+            darkColorClass={currentQuestionIndex === quiz.questions.length - 1 ? "bg-emerald-700" : "bg-black"}
+          />
         </div>
       </div>
     </div>
