@@ -3,13 +3,14 @@ import Result from '../models/Result.js';
 
 export const createQuiz = async (req, res) => {
   try {
-    const { title, description, timeLimit, questions, allowMultipleAttempts } = req.body;
+    const { title, description, timeLimit, questions, allowMultipleAttempts, scheduledStartTime } = req.body;
     const quiz = new Quiz({
       title,
       description,
       timeLimit,
       questions,
       allowMultipleAttempts: allowMultipleAttempts !== undefined ? allowMultipleAttempts : true,
+      scheduledStartTime: scheduledStartTime || null,
       createdBy: req.user.id,
     });
     await quiz.save();
@@ -24,13 +25,16 @@ export const getQuizzes = async (req, res) => {
     const quizzes = await Quiz.find({ isActive: true }).select('-questions.correctIndex');
     
     if (req.user.role === 'student') {
-      const studentResults = await Result.find({ student: req.user.id }).select('quiz');
-      const takenQuizIds = studentResults.map(r => r.quiz.toString());
+      let takenQuizIds = [];
+      
+      // الضيف لا يملك معرف صحيح لـ ObjectId، لذا لا نبحث عن نتائجه
+      if (req.user.id !== 'guest') {
+        const studentResults = await Result.find({ student: req.user.id }).select('quiz');
+        takenQuizIds = studentResults.map(r => r.quiz.toString());
+      }
       
       const availableQuizzes = quizzes.filter(quiz => {
         const isTaken = takenQuizIds.includes(quiz._id.toString());
-        // Logic: If isTaken is true, only show if allowMultipleAttempts is true
-        // If isTaken is false, always show
         if (isTaken) {
           return quiz.allowMultipleAttempts === true;
         }
@@ -61,12 +65,14 @@ export const getQuizById = async (req, res) => {
     if (!quiz) return res.status(404).json({ message: 'الاختبار غير موجود' });
     
     if (req.user.role === 'student' && quiz.allowMultipleAttempts === false) {
-        const existingResult = await Result.findOne({ student: req.user.id, quiz: req.params.id });
-        if (existingResult) {
-            return res.status(403).json({ 
-              message: 'لقد أديت هذا الاختبار بالفعل، ولا يسمح بإعادته مرة أخرى',
-              isAlreadyTaken: true 
-            });
+        if (req.user.id !== 'guest') {
+            const existingResult = await Result.findOne({ student: req.user.id, quiz: req.params.id });
+            if (existingResult) {
+                return res.status(403).json({ 
+                  message: 'لقد أديت هذا الاختبار بالفعل، ولا يسمح بإعادته مرة أخرى',
+                  isAlreadyTaken: true 
+                });
+            }
         }
     }
 

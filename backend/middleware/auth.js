@@ -21,3 +21,24 @@ export const authorize = (...roles) => {
     next();
   };
 };
+
+// ============================================================
+// [TEMP] guestStudent - تجاوز مؤقت لنظام تسجيل الدخول للطلاب
+// يسمح بالوصول بدون توكن ويعامل المستخدم كطالب guest
+// عند الرغبة في إعادة تفعيل نظام الدخول، احذف هذا الـ middleware
+// واستبدل استخدامه في routes/quiz.js و routes/result.js بـ auth
+// ============================================================
+export const guestStudent = (req, res, next) => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+    } catch {
+      req.user = { id: 'guest', role: 'student', name: 'زائر' };
+    }
+  } else {
+    req.user = { id: 'guest', role: 'student', name: 'زائر' };
+  }
+  next();
+};

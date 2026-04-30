@@ -118,7 +118,7 @@ const TeacherDashboard = () => {
   };
 
   const handleEditQuiz = (quiz) => {
-    setNewQuiz({ title: quiz.title, description: quiz.description, timeLimit: quiz.timeLimit, allowMultipleAttempts: quiz.allowMultipleAttempts ?? true, questions: quiz.questions });
+    setNewQuiz({ title: quiz.title, description: quiz.description, timeLimit: quiz.timeLimit, allowMultipleAttempts: quiz.allowMultipleAttempts ?? true, scheduledStartTime: quiz.scheduledStartTime || '', questions: quiz.questions });
     setEditingQuizId(quiz._id);
     setSubView('edit');
   };
@@ -213,13 +213,17 @@ const TeacherDashboard = () => {
               ) : (
                 <form onSubmit={handleCreateQuiz} className="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="md:col-span-3">
+                    <div className="md:col-span-2">
                       <label className="block text-xs font-bold text-slate-600 mb-1.5">عنوان الاختبار</label>
                       <input type="text" className="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:border-sky-500 text-sm" value={newQuiz.title} onChange={(e) => setNewQuiz({ ...newQuiz, title: e.target.value })} required />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-slate-600 mb-1.5">الوقت (دقيقة)</label>
                       <input type="number" className="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:border-sky-500 text-sm" value={newQuiz.timeLimit} onChange={(e) => setNewQuiz({ ...newQuiz, timeLimit: e.target.value })} required />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-600 mb-1.5">وقت البدء (اختياري)</label>
+                      <input type="datetime-local" className="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:border-sky-500 text-sm" value={newQuiz.scheduledStartTime ? new Date(new Date(newQuiz.scheduledStartTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''} onChange={(e) => setNewQuiz({ ...newQuiz, scheduledStartTime: e.target.value })} />
                     </div>
                   </div>
 

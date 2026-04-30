@@ -31,7 +31,6 @@ export const submitResult = async (req, res) => {
     const wrongAnswers = totalQuestions - score;
 
     const resultData = {
-      student: req.user.id,
       quiz: quizId,
       answers: processedAnswers,
       score,
@@ -42,6 +41,10 @@ export const submitResult = async (req, res) => {
       startedAt: startedAt ? new Date(startedAt) : new Date(),
       finishedAt: new Date()
     };
+
+    if (req.user && req.user.id !== 'guest') {
+      resultData.student = req.user.id;
+    }
 
     const result = new Result(resultData);
     await result.save();
@@ -55,6 +58,9 @@ export const submitResult = async (req, res) => {
 
 export const getMyResults = async (req, res) => {
   try {
+    if (req.user.id === 'guest') {
+      return res.json([]); // الضيوف لا يرون سجل نتائجهم
+    }
     const results = await Result.find({ student: req.user.id })
       .populate('quiz', 'title')
       .sort({ finishedAt: -1 });

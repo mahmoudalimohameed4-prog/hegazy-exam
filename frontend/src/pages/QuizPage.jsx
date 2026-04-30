@@ -19,10 +19,20 @@ const QuizPage = () => {
     const fetchQuiz = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/api/v1/quizzes/${id}`);
+        
+        try {
+          const taken = JSON.parse(localStorage.getItem('takenQuizzes') || '[]');
+          if (taken.includes(id) && res.data.allowMultipleAttempts === false) {
+            Swal.fire({ icon: 'warning', title: 'عفواً!', text: 'لقد قمت بأداء هذا الاختبار بالفعل ولا يمكن إعادته.', confirmButtonText: 'حسناً' });
+            navigate('/student');
+            return;
+          }
+        } catch (e) {}
+
         setQuiz(res.data);
         setTimeLeft(res.data.timeLimit * 60);
       } catch (err) {
-        Swal.fire({ icon: 'error', title: 'خطأ!', text: 'فشل في تحميل الاختبار', confirmButtonText: 'حسناً' });
+        Swal.fire({ icon: 'error', title: 'خطأ!', text: 'فشل في تحميل الاختبار أو أنك لا تملك صلاحية الوصول', confirmButtonText: 'حسناً' });
         navigate('/student');
       } finally {
         setLoading(false);
@@ -61,6 +71,14 @@ const QuizPage = () => {
         answers: answerArray,
         startedAt,
       });
+
+      try {
+        const taken = JSON.parse(localStorage.getItem('takenQuizzes') || '[]');
+        if (!taken.includes(id)) {
+          taken.push(id);
+          localStorage.setItem('takenQuizzes', JSON.stringify(taken));
+        }
+      } catch (e) {}
 
       Swal.fire({ icon: 'success', title: 'تم الإرسال!', showConfirmButton: false, timer: 1000 });
       navigate(`/result/${res.data._id}`);

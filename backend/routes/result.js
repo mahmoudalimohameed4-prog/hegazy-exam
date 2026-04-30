@@ -1,13 +1,14 @@
 import express from 'express';
 import { submitResult, getMyResults, getQuizResults, getAllTeacherResults, getResultById } from '../controllers/resultController.js';
-import { auth, authorize } from '../middleware/auth.js';
+import { auth, authorize, guestStudent } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.post('/submit', auth, authorize('student'), submitResult);
-router.get('/myresults', auth, authorize('student'), getMyResults);
+// [TEMP] السماح للطلاب بتسليم النتائج بدون توكن
+router.post('/submit', guestStudent, submitResult);
+router.get('/myresults', guestStudent, getMyResults);
 router.get('/teacher/all', auth, authorize('teacher'), getAllTeacherResults);
 router.get('/quiz/:quizId', auth, authorize('teacher'), getQuizResults);
-router.get('/:id', auth, getResultById);
+router.get('/:id', guestStudent, getResultById);
 
 export default router;

@@ -1,13 +1,14 @@
 import express from 'express';
 import { createQuiz, getQuizzes, getMyQuizzes, getQuizById, updateQuiz, deleteQuiz } from '../controllers/quizController.js';
-import { auth, authorize } from '../middleware/auth.js';
+import { auth, authorize, guestStudent } from '../middleware/auth.js';
 
 const router = express.Router();
 
 router.post('/', auth, authorize('teacher'), createQuiz);
-router.get('/', auth, getQuizzes);
+// [TEMP] السماح للطلاب بالدخول بدون توكن
+router.get('/', guestStudent, getQuizzes);
 router.get('/my', auth, authorize('teacher'), getMyQuizzes);
-router.get('/:id', auth, getQuizById);
+router.get('/:id', guestStudent, getQuizById);
 router.put('/:id', auth, authorize('teacher'), updateQuiz);
 router.delete('/:id', auth, authorize('teacher'), deleteQuiz);
 

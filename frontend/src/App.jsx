@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import StudentDashboard from './pages/StudentDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
 import QuizPage from './pages/QuizPage';
+import QuizInfoPage from './pages/QuizInfoPage';
 import ResultPage from './pages/ResultPage';
 
 const ProtectedRoute = ({ children, role }) => {
@@ -21,7 +22,8 @@ const ProtectedRoute = ({ children, role }) => {
 const HomeRedirect = () => {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (!user) return <Navigate to="/login" />;
+  // [TEMP] توجيه الطلاب مباشرة للوحة التحكم بدون تسجيل دخول
+  if (!user) return <Navigate to="/student" />;
   return <Navigate to={user.role === 'teacher' ? '/teacher' : '/student'} />;
 };
 
@@ -34,21 +36,27 @@ function App() {
             <Route path="/login" element={<Login />} />
             
             <Route path="/student" element={
-              <ProtectedRoute role="student">
+              // <ProtectedRoute role="student">
                 <StudentDashboard />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
             
             <Route path="/quiz/:id" element={
-              <ProtectedRoute role="student">
+              // <ProtectedRoute role="student">
+                <QuizInfoPage />
+              // </ProtectedRoute>
+            } />
+
+            <Route path="/quiz/:id/play" element={
+              // <ProtectedRoute role="student">
                 <QuizPage />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
             
             <Route path="/result/:id" element={
-              <ProtectedRoute role="student">
+              // <ProtectedRoute role="student">
                 <ResultPage />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
             
             <Route path="/teacher" element={

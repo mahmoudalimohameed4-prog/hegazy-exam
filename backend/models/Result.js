@@ -4,7 +4,7 @@ const resultSchema = new mongoose.Schema({
   student: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false, // [TEMP] changed to false to allow guest results
   },
   quiz: {
     type: mongoose.Schema.Types.ObjectId,

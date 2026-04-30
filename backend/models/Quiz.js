@@ -44,6 +44,10 @@ const quizSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  scheduledStartTime: {
+    type: Date,
+    default: null, // If null, the quiz can be started at any time
+  },
   createdAt: {
     type: Date,
     default: Date.now,
