@@ -1,5 +1,13 @@
 import express from 'express';
-import { submitResult, getMyResults, getQuizResults, getAllTeacherResults, getResultById } from '../controllers/resultController.js';
+import { 
+  submitResult, 
+  getMyResults, 
+  getQuizResults, 
+  getAllTeacherResults, 
+  getResultById,
+  deleteResult,
+  deleteAllResults
+} from '../controllers/resultController.js';
 import { auth, authorize, guestStudent } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -10,5 +18,9 @@ router.get('/myresults', guestStudent, getMyResults);
 router.get('/teacher/all', auth, authorize('teacher'), getAllTeacherResults);
 router.get('/quiz/:quizId', auth, authorize('teacher'), getQuizResults);
 router.get('/:id', guestStudent, getResultById);
+
+// التحكم في الحذف
+router.delete('/teacher/clear-all', auth, authorize('teacher'), deleteAllResults);
+router.delete('/:id', auth, authorize('teacher'), deleteResult);
 
 export default router;

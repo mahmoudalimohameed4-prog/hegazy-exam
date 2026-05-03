@@ -134,6 +134,52 @@ const TeacherDashboard = () => {
     }
   };
 
+  const handleDeleteResult = async (id) => {
+    const confirm = await Swal.fire({
+      title: 'هل أنت متأكد؟',
+      text: "سيتم حذف هذه النتيجة نهائياً!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'نعم، احذفها!',
+      cancelButtonText: 'إلغاء'
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        await axios.delete(`${API_BASE_URL}/api/v1/results/${id}`);
+        setResults(results.filter(r => r._id !== id));
+        Swal.fire('تم الحذف!', 'تم حذف النتيجة بنجاح.', 'success');
+      } catch (err) {
+        Swal.fire('خطأ!', 'فشل حذف النتيجة.', 'error');
+      }
+    }
+  };
+
+  const handleClearAllResults = async () => {
+    const confirm = await Swal.fire({
+      title: 'حذف الكل؟',
+      text: "سيتم مسح كافة النتائج في المنصة! لا يمكن التراجع عن هذا الإجراء.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'نعم، امسح الكل!',
+      cancelButtonText: 'إلغاء'
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        await axios.delete(`${API_BASE_URL}/api/v1/results/teacher/clear-all`);
+        setResults([]);
+        Swal.fire('تم المسح!', 'تم مسح كافة النتائج بنجاح.', 'success');
+      } catch (err) {
+        Swal.fire('خطأ!', 'فشل مسح النتائج.', 'error');
+      }
+    }
+  };
+
   const ModernButton = ({ onClick, text, icon: Icon, colorClass = "bg-sky-600", darkColorClass = "bg-sky-700", type = "button", className = "" }) => (
     <button 
       type={type} 
@@ -358,31 +404,62 @@ const TeacherDashboard = () => {
           )}
 
           {activeTab === 'analytics' && (
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-               <div className="overflow-x-auto text-sm">
-                  <table className="w-full text-right">
-                    <thead>
-                      <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
-                        <th className="px-6 py-3">الطالب</th>
-                        <th className="px-6 py-3">الاختبار</th>
-                        <th className="px-6 py-3 text-center">الدرجة</th>
-                        <th className="px-6 py-3 text-center">النسبة</th>
-                        <th className="px-6 py-3">التاريخ</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {loading ? [1,2,3,4].map(i => <tr key={i}><td colSpan="5" className="px-6 py-3 animate-pulse"><div className="h-6 bg-slate-50 rounded"></div></td></tr>) : results.map((result) => (
-                        <tr key={result._id} className="hover:bg-slate-50/50">
-                          <td className="px-6 py-3"><div className="font-bold text-slate-700 text-xs">{result.student?.name}</div><div className="text-[10px] text-slate-400">{result.student?.identifier}</div></td>
-                          <td className="px-6 py-3 text-xs text-slate-600">{result.quiz?.title}</td>
-                          <td className="px-6 py-3 text-center font-bold text-slate-700">{result.score} / {result.total}</td>
-                          <td className="px-6 py-3 text-center"><span className={`px-2 py-0.5 rounded text-[10px] font-bold ${result.percentage >= 50 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>{result.percentage.toFixed(0)}%</span></td>
-                          <td className="px-6 py-3 text-[10px] text-slate-400">{new Date(result.finishedAt).toLocaleDateString('ar-EG')}</td>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center px-2">
+                <h2 className="text-lg font-bold text-slate-800">سجل نتائج الطلاب</h2>
+                <button 
+                  onClick={handleClearAllResults}
+                  className="px-4 py-2 bg-red-50 text-red-600 text-xs font-bold rounded-xl hover:bg-red-100 transition-colors flex items-center gap-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  مسح كافة النتائج
+                </button>
+              </div>
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                 <div className="overflow-x-auto text-sm">
+                    <table className="w-full text-right">
+                      <thead>
+                        <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                          <th className="px-6 py-3">الطالب</th>
+                          <th className="px-6 py-3">الاختبار</th>
+                          <th className="px-6 py-3 text-center">الدرجة</th>
+                          <th className="px-6 py-3 text-center">النسبة</th>
+                          <th className="px-6 py-3">التاريخ</th>
+                          <th className="px-6 py-3 text-center">إجراءات</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-               </div>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {loading ? [1,2,3,4].map(i => <tr key={i}><td colSpan="6" className="px-6 py-3 animate-pulse"><div className="h-6 bg-slate-50 rounded"></div></td></tr>) : results.length === 0 ? (
+                          <tr><td colSpan="6" className="px-6 py-10 text-center text-slate-400">لا يوجد نتائج مسجلة حالياً</td></tr>
+                        ) : results.map((result) => (
+                          <tr key={result._id} className="hover:bg-slate-50/50">
+                            <td className="px-6 py-3">
+                              <div className="font-bold text-slate-700 text-xs">{result.student?.name || 'زائر / ضيف'}</div>
+                              <div className="text-[10px] text-slate-400">{result.student?.identifier || 'بدون معرف'}</div>
+                            </td>
+                            <td className="px-6 py-3 text-xs text-slate-600">{result.quiz?.title || 'اختبار محذوف'}</td>
+                            <td className="px-6 py-3 text-center font-bold text-slate-700">{result.score} / {result.total}</td>
+                            <td className="px-6 py-3 text-center">
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${result.percentage >= 50 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                                {result.percentage.toFixed(0)}%
+                              </span>
+                            </td>
+                            <td className="px-6 py-3 text-[10px] text-slate-400">{new Date(result.finishedAt).toLocaleDateString('ar-EG')}</td>
+                            <td className="px-6 py-3 text-center">
+                              <button 
+                                onClick={() => handleDeleteResult(result._id)}
+                                className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                                title="حذف النتيجة"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                 </div>
+              </div>
             </div>
           )}
         </div>

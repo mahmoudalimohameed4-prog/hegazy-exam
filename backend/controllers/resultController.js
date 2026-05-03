@@ -84,16 +84,32 @@ export const getResultById = async (req, res) => {
 
 export const getAllTeacherResults = async (req, res) => {
   try {
-    // Fix: Using createdBy instead of teacher
-    const myQuizzes = await Quiz.find({ createdBy: req.user.id }).select('_id');
-    const quizIds = myQuizzes.map(q => q._id);
-
-    const results = await Result.find({ quiz: { $in: quizIds } })
+    // عرض كافة النتائج في النظام للمعلم
+    const results = await Result.find()
       .populate('student', 'name identifier')
       .populate('quiz', 'title')
       .sort({ finishedAt: -1 });
     
     res.json(results);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteResult = async (req, res) => {
+  try {
+    await Result.findByIdAndDelete(req.params.id);
+    res.json({ message: 'تم حذف النتيجة بنجاح' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteAllResults = async (req, res) => {
+  try {
+    // مسح كافة النتائج من قاعدة البيانات
+    await Result.deleteMany({});
+    res.json({ message: 'تم مسح كافة سجلات النتائج بنجاح' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
