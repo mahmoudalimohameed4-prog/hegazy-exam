@@ -5,6 +5,8 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import User from './models/User.js';
 import authRoutes from './routes/auth.js';
 import quizRoutes from './routes/quiz.js';
 import resultRoutes from './routes/result.js';
@@ -24,6 +26,33 @@ app.use(express.json());
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/quizzes', quizRoutes);
 app.use('/api/v1/results', resultRoutes);
+
+// Temporary Setup Admin Route
+app.get('/api/v1/setup-admin', async (req, res) => {
+  try {
+    const identifier = '01015112428';
+    const password = 'hegazy2003';
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const user = await User.findOneAndUpdate(
+      { identifier },
+      { 
+        identifier, 
+        identifierType: 'phone', 
+        password: hashedPassword, 
+        name: 'Hegazy Admin', 
+        role: 'teacher' 
+      },
+      { upsert: true, new: true }
+    );
+    res.json({ 
+      message: 'Teacher account created/updated successfully! You can now login.',
+      user: { identifier: user.identifier, role: user.role }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Welcome Route
 app.get('/', (req, res) => {
