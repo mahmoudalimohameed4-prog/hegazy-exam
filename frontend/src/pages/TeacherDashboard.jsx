@@ -385,6 +385,30 @@ const TeacherDashboard = () => {
                </div>
             </div>
           )}
+
+          {activeTab === 'profile' && (
+            <div className="max-w-xl bg-white rounded-2xl border border-slate-200 p-8 text-center shadow-sm">
+              <div className="w-20 h-20 bg-sky-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="w-10 h-10 text-sky-600" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-800 mb-2">{user?.name}</h2>
+              <p className="text-slate-500 text-sm mb-6">الدور: معلم / مسؤول النظام</p>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-right space-y-2">
+                <div className="flex justify-between text-sm"><span className="text-slate-400">رقم الهاتف:</span> <span className="font-bold">{user?.identifier}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-slate-400">تاريخ الانضمام:</span> <span className="font-bold">{new Date(user?.createdAt).toLocaleDateString('ar-EG')}</span></div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'schedule' && (
+            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-sm">
+              <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <BookOpen className="w-10 h-10 text-amber-600" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">المواد الدراسية</h3>
+              <p className="text-slate-500 text-sm">سيتم إضافة جدول المواد وتوزيع المناهج في التحديث القادم.</p>
+            </div>
+          )}
         </div>
       </main>
     </div>

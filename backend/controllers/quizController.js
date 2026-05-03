@@ -52,7 +52,8 @@ export const getQuizzes = async (req, res) => {
 
 export const getMyQuizzes = async (req, res) => {
   try {
-    const quizzes = await Quiz.find({ createdBy: req.user.id });
+    // منح المعلم صلاحية رؤية كافة الاختبارات في النظام
+    const quizzes = await Quiz.find().sort({ createdAt: -1 });
     res.json(quizzes);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -94,7 +95,7 @@ export const getQuizById = async (req, res) => {
 export const updateQuiz = async (req, res) => {
   try {
     const quiz = await Quiz.findOneAndUpdate(
-      { _id: req.params.id, createdBy: req.user.id },
+      { _id: req.params.id },
       req.body,
       { new: true }
     );
@@ -107,7 +108,7 @@ export const updateQuiz = async (req, res) => {
 
 export const deleteQuiz = async (req, res) => {
   try {
-    const quiz = await Quiz.findOneAndDelete({ _id: req.params.id, createdBy: req.user.id });
+    const quiz = await Quiz.findOneAndDelete({ _id: req.params.id });
     if (!quiz) return res.status(404).json({ message: 'الاختبار غير موجود أو غير مصرح لك بحذفه' });
     res.json({ message: 'تم حذف الاختبار بنجاح' });
   } catch (error) {
