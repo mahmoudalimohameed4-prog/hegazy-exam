@@ -1,4 +1,7 @@
 import express from 'express';
+import dns from 'dns';
+dns.setDefaultResultOrder('ipv4first');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
@@ -21,7 +24,7 @@ app.use('/api/v1/results', resultRoutes);
 
 // Database connection
 console.log('⏳ Connecting to MongoDB...');
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, { family: 4 })
   .then(() => console.log('✅ Connected to MongoDB Atlas'))
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err.message);

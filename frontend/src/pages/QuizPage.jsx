@@ -14,6 +14,8 @@ const QuizPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
   const [startedAt] = useState(new Date());
+  const [showLoadingCard, setShowLoadingCard] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(1); // 1: Finished, 2: Correcting
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -66,6 +68,10 @@ const QuizPage = () => {
         selectedOption: answers[index] ?? -1
       }));
 
+      // Start the loading sequence before/during the API call
+      setShowLoadingCard(true);
+      setLoadingStep(1);
+
       const res = await axios.post('http://localhost:5000/api/v1/results/submit', {
         quizId: id,
         answers: answerArray,
@@ -80,23 +86,29 @@ const QuizPage = () => {
         }
       } catch (e) {}
 
-      Swal.fire({ icon: 'success', title: 'تم الإرسال!', showConfirmButton: false, timer: 1000 });
-      navigate(`/result/${res.data._id}`);
+      // Sequence timing
+      setTimeout(() => {
+        setLoadingStep(2); // Change to "Correcting"
+        setTimeout(() => {
+          navigate(`/result/${res.data._id}`);
+        }, 3000); // Wait 3 seconds for correcting
+      }, 2000); // Wait 2 seconds for finished
+
     } catch (err) {
+      setShowLoadingCard(false);
       Swal.fire({ icon: 'error', title: 'خطأ!', text: 'فشل في إرسال الإجابات', confirmButtonText: 'حسناً' });
-    } finally {
       setSubmitting(false);
     }
   }, [id, quiz, answers, startedAt, navigate, submitting]);
 
   useEffect(() => {
-    if (timeLeft <= 0 && !loading && quiz) {
+    if (timeLeft <= 0 && !loading && quiz && !showLoadingCard) {
       handleSubmit(true);
       return;
     }
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, loading, quiz, handleSubmit]);
+  }, [timeLeft, loading, quiz, handleSubmit, showLoadingCard]);
 
   const handleNext = () => {
     if (currentQuestionIndex < quiz.questions.length - 1) {
@@ -136,7 +148,42 @@ const QuizPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-12" dir="rtl">
+    <div className="min-h-screen bg-slate-50 pb-12 relative overflow-hidden" dir="rtl">
+      {/* PES Style Loading Modal - Exact Match */}
+      {showLoadingCard && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/50 backdrop-blur-[2px] animate-in fade-in duration-200">
+          <div className="w-full max-w-[380px] bg-white rounded-[2.5rem] p-8 pt-10 shadow-2xl animate-in zoom-in-95 duration-300 text-center">
+            
+            {/* Title (Match PES bold title) */}
+            <h2 className="text-[22px] font-bold text-black mb-3">
+              {loadingStep === 1 ? 'تم الانتهاء من الامتحان' : 'جاري تصحيح الاختبار'}
+            </h2>
+            
+            {/* Subtext */}
+            <p className="text-[15px] text-gray-800 font-medium mb-1">
+              {loadingStep === 1 ? 'جاري إرسال إجاباتك للسيرفر' : 'يتم احتساب الدرجة الآن'}
+            </p>
+            <p className="text-[15px] text-gray-800 font-medium mb-6">
+              {loadingStep === 1 ? 'يرجى الانتظار...' : 'لحظات من فضلك...'}
+            </p>
+
+            {/* Blue "Link" (Used as status) */}
+            <div className="mb-4">
+              <span className="text-[#3a8ecd] font-bold text-[17px] hover:underline cursor-default">
+                {loadingStep === 1 ? 'تحميل البيانات...' : 'عرض النتيجة...'}
+              </span>
+            </div>
+
+            {/* Subtle pulse animation for waiting feeling */}
+            <div className="flex justify-center gap-1.5 mt-2">
+              <div className="w-2 h-2 bg-[#dce9f5] rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-[#b8d4ed] rounded-full animate-pulse delay-75"></div>
+              <div className="w-2 h-2 bg-[#3a8ecd] rounded-full animate-pulse delay-150"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header with Timer & Progress */}
       <div className="bg-white border-b sticky top-0 z-40 shadow-sm">
         <div className="max-w-3xl mx-auto px-4 py-3">

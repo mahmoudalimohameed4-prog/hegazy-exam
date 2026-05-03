@@ -72,7 +72,9 @@ export const getMyResults = async (req, res) => {
 
 export const getResultById = async (req, res) => {
   try {
-    const result = await Result.findById(req.params.id).populate('quiz', 'title');
+    const result = await Result.findById(req.params.id)
+      .populate('quiz')
+      .populate('student', 'name identifier');
     if (!result) return res.status(404).json({ message: 'النتيجة غير موجودة' });
     res.json(result);
   } catch (error) {
