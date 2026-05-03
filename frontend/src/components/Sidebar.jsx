@@ -28,15 +28,12 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, isCollapsed, setI
     { id: 'quizzes', name: 'إدارة الاختبارات', icon: Home },
     { id: 'users', name: 'إدارة الطلاب والمساعدين', icon: Users },
     { id: 'analytics', name: 'النتائج والتقارير', icon: GraduationCap },
-    { id: 'profile', name: 'البيانات الشخصية', icon: Info },
-    { id: 'schedule', name: 'المواد الدراسية', icon: BookOpen },
   ];
 
   const studentItems = [
     { id: 'quizzes', name: 'الاختبارات المتاحة', icon: Book },
     { id: 'results', name: 'إحصائياتي ونتائجي', icon: BarChart3 },
     { id: 'settings', name: 'إعدادات الحساب', icon: Settings },
-    { id: 'profile', name: 'بياناتي', icon: Info },
   ];
 
   const menuItems = user?.role === 'teacher' ? teacherItems : studentItems;
