@@ -3,12 +3,10 @@
   "experimentalServices": {
     "frontend": {
       "entrypoint": "frontend",
-      "install": "npm install",
       "build": "npm run build"
     },
     "backend": {
       "entrypoint": "backend",
-      "install": "npm install",
       "build": "npm run start"
     }
   }
