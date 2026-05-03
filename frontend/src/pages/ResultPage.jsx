@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 import Swal from 'sweetalert2';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
@@ -16,7 +17,7 @@ const ResultPage = () => {
   useEffect(() => {
     const fetchResult = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/v1/results/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/api/v1/results/${id}`);
         setResult(res.data);
       } catch (err) {
         Swal.fire('خطأ!', 'فشل في تحميل النتيجة', 'error');

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Play, ClipboardList, BarChart3, Clock, CheckCircle2, Menu, Settings, Lock, Eye, Save } from 'lucide-react';
@@ -25,7 +26,7 @@ const StudentDashboard = () => {
     setLoading(true);
     try {
       if (activeTab === 'quizzes') {
-        const res = await axios.get('http://localhost:5000/api/v1/quizzes');
+        const res = await axios.get(`${API_BASE_URL}/api/v1/quizzes`);
         
         let takenQuizzes = [];
         try {
@@ -41,7 +42,7 @@ const StudentDashboard = () => {
 
         setQuizzes(availableQuizzes);
       } else if (activeTab === 'results') {
-        const res = await axios.get('http://localhost:5000/api/v1/results/myresults');
+        const res = await axios.get(`${API_BASE_URL}/api/v1/results/myresults`);
         setResults(res.data);
       }
     } catch (err) {
@@ -54,7 +55,7 @@ const StudentDashboard = () => {
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
     try {
-      await axios.put('http://localhost:5000/api/v1/auth/update-password', { password: newPassword });
+      await axios.put(`${API_BASE_URL}/api/v1/auth/update-password`, { password: newPassword });
       Swal.fire({ icon: 'success', title: 'تم التحديث!', timer: 1500, showConfirmButton: false });
       setNewPassword('');
     } catch (err) {

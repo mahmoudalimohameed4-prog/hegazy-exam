@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 import { Clock, ClipboardList, Play } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -14,7 +15,7 @@ const QuizInfoPage = () => {
   useEffect(() => {
     const fetchQuizInfo = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/v1/quizzes/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/api/v1/quizzes/${id}`);
         setQuiz(res.data);
       } catch (err) {
         Swal.fire('خطأ!', 'فشل في تحميل تفاصيل الاختبار', 'error');

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 import { useAuth } from '../context/AuthContext';
 import { Plus, Trash2, Users, ClipboardList, Eye, X, Check, Menu, Search, Edit3, ArrowRight, UserPlus, Save, LogOut } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
@@ -35,13 +36,13 @@ const TeacherDashboard = () => {
     setLoading(true);
     try {
       if (activeTab === 'quizzes') {
-        const res = await axios.get('http://localhost:5000/api/v1/quizzes/my');
+        const res = await axios.get('${API_BASE_URL}/api/v1/quizzes/my');
         setQuizzes(res.data);
       } else if (activeTab === 'analytics') {
-        const res = await axios.get('http://localhost:5000/api/v1/results/teacher/all');
+        const res = await axios.get('${API_BASE_URL}/api/v1/results/teacher/all');
         setResults(res.data);
       } else if (activeTab === 'users') {
-        const res = await axios.get('http://localhost:5000/api/v1/auth/users');
+        const res = await axios.get('${API_BASE_URL}/api/v1/auth/users');
         setUsers(res.data);
       }
     } catch (err) { console.error(err); } 
@@ -53,10 +54,10 @@ const TeacherDashboard = () => {
     Swal.fire({ title: 'جاري الحفظ...', didOpen: () => Swal.showLoading() });
     try {
       if (editingQuizId) {
-        await axios.put(`http://localhost:5000/api/v1/quizzes/${editingQuizId}`, newQuiz);
+        await axios.put(`${API_BASE_URL}/api/v1/quizzes/${editingQuizId}`, newQuiz);
         Swal.fire({ icon: 'success', title: 'تم التعديل!', timer: 1500, showConfirmButton: false });
       } else {
-        await axios.post('http://localhost:5000/api/v1/quizzes', newQuiz);
+        await axios.post('${API_BASE_URL}/api/v1/quizzes', newQuiz);
         Swal.fire({ icon: 'success', title: 'تم النشر!', timer: 1500, showConfirmButton: false });
       }
       setSubView('list');
@@ -70,10 +71,10 @@ const TeacherDashboard = () => {
     Swal.fire({ title: 'جاري الحفظ...', didOpen: () => Swal.showLoading() });
     try {
       if (editingUserId) {
-        await axios.put(`http://localhost:5000/api/v1/auth/users/${editingUserId}`, userData);
+        await axios.put(`${API_BASE_URL}/api/v1/auth/users/${editingUserId}`, userData);
         Swal.fire({ icon: 'success', title: 'تم تحديث البيانات!', timer: 1500, showConfirmButton: false });
       } else {
-        await axios.post('http://localhost:5000/api/v1/auth/add-user', userData);
+        await axios.post('${API_BASE_URL}/api/v1/auth/add-user', userData);
         Swal.fire({ icon: 'success', title: 'تمت الإضافة!', timer: 1500, showConfirmButton: false });
       }
       setSubView('list');
@@ -108,7 +109,7 @@ const TeacherDashboard = () => {
     });
     if (res.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/v1/auth/users/${id}`);
+        await axios.delete(`${API_BASE_URL}/api/v1/auth/users/${id}`);
         Swal.fire({ icon: 'success', title: 'تم الحذف!', timer: 1000, showConfirmButton: false });
         fetchData();
       } catch (err) {
@@ -127,7 +128,7 @@ const TeacherDashboard = () => {
     const res = await Swal.fire({ title: 'هل أنت متأكد؟', icon: 'warning', showCancelButton: true, confirmButtonText: 'نعم، احذف', cancelButtonText: 'إلغاء' });
     if (res.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/v1/quizzes/${id}`);
+        await axios.delete(`${API_BASE_URL}/api/v1/quizzes/${id}`);
         fetchData();
       } catch (err) { Swal.fire('خطأ!', 'فشل الحذف', 'error'); }
     }

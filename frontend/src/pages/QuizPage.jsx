@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 import { Clock, CheckCircle2, ChevronLeft, Send, ArrowRight } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -20,7 +21,7 @@ const QuizPage = () => {
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/v1/quizzes/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/api/v1/quizzes/${id}`);
         
         try {
           const taken = JSON.parse(localStorage.getItem('takenQuizzes') || '[]');
@@ -72,7 +73,7 @@ const QuizPage = () => {
       setShowLoadingCard(true);
       setLoadingStep(1);
 
-      const res = await axios.post('http://localhost:5000/api/v1/results/submit', {
+      const res = await axios.post(`${API_BASE_URL}/api/v1/results/submit`, {
         quizId: id,
         answers: answerArray,
         startedAt,
