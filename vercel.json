@@ -1,17 +1,15 @@
 {
   "version": 2,
-  "rewrites": [
-    {
-      "source": "/api/v1/(.*)",
-      "destination": "/api/index.js"
+  "experimentalServices": {
+    "frontend": {
+      "entrypoint": "frontend",
+      "install": "npm install",
+      "build": "npm run build"
     },
-    {
-      "source": "/assets/(.*)",
-      "destination": "/frontend/dist/assets/$1"
-    },
-    {
-      "source": "/((?!api/v1).*)",
-      "destination": "/frontend/dist/index.html"
+    "backend": {
+      "entrypoint": "backend",
+      "install": "npm install",
+      "build": "npm run start"
     }
-  ]
+  }
 }
